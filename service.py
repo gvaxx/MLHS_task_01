@@ -106,12 +106,12 @@ def predict_items(file: UploadFile = File(...)):
     df = original_df.copy()
     for index, row in df.iterrows():
         try:
-            df.loc[index] = Item(**row.to_dict())
+            Item(**row.to_dict())
         except Exception as e:
             raise HTTPException(detail=f'Error in row {index}: {e}', status_code=403)
     df = data_preprocessing(df)
     predictions = model.predict(df)
-    predictions_df = pd.DataFrame(predictions, columns=['selling_price'])
+    predictions_df = pd.DataFrame(predictions, columns=['predicted_selling_price'])
     new_df = pd.concat([original_df, predictions_df], axis=1)
     stream = io.StringIO()
     new_df.to_csv(stream, index=True)
